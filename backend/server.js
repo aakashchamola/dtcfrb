@@ -14,31 +14,37 @@ mongoose.connect(process.env.URI).then(() => {
 const app = express();
 app.use(express.json()); // For parsing JSON
 
-// Import models
-const Bus = require('./models/Bus');
-const Crew = require('./models/Crew');
-const BusStop = require('./models/BusStop');
-const Route = require('./models/Route');
-const Schedule = require('./models/Schedules');
-// const RouteOverlap = require('./models/RouteOverlap');
-// const RealTimeData = require('./models/RealTimeData');
+// // Import models
+// const Bus = require('./models/Bus');
+// const Crew = require('./models/Crew');
+// const BusStop = require('./models/BusStop');
+// const Route = require('./models/Route');
+// const Schedule = require('./models/Schedules');
+// // const RouteOverlap = require('./models/RouteOverlap');
+// // const RealTimeData = require('./models/RealTimeData');
 
-// Example route
-app.get('/', (req, res) => {
-  res.send('Automated Bus Scheduling and Route Management System API');
-});
+// Import routes
+const busRoutes = require('./routes/busRoutes');
+const crewRoutes = require('./routes/crewRoutes');
+const busStopRoutes = require('./routes/busStopRoutes');
+const routeRoutes = require('./routes/routeRoutes');
+const scheduleRoutes = require('./routes/scheduleRoutes');
+// const routeOverlapRoutes = require('./routes/routeOverlapRoutes');
+// const realTimeDataRoutes = require('./routes/realTimeDataRoutes');
 
-// // Example: Get all buses
-app.get('/buses', async (req, res) => {
-  const buses = await Bus.find();
-  res.json(buses);
-});
+// Register routes
+app.use('/api/buses', busRoutes);
+app.use('/api/crew', crewRoutes);
+app.use('/api/busstops', busStopRoutes);
+app.use('/api/routes', routeRoutes);
+app.use('/api/schedules', scheduleRoutes);
+// app.use('/api/routeoverlaps', routeOverlapRoutes);
+// app.use('/api/realtimedata', realTimeDataRoutes);
 
-// // Example: Add a new bus
-app.post('/buses', async (req, res) => {
-  const bus = new Bus(req.body);
-  await bus.save();
-  res.json(bus);
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Server Error' });
 });
 
 // // Start the server
