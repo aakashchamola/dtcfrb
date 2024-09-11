@@ -14,6 +14,21 @@ mongoose.connect(process.env.URI).then(() => {
 const app = express();
 app.use(express.json()); // For parsing JSON
 
+
+// CORS configuration
+const corsOptions = {
+  origin: "http://localhost:3000",
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Expires",
+      "Pragma",
+    ],
+    credentials: true, // Allow these headers
+};
+app.use(cors(corsOptions));
 // // Import models
 // const Bus = require('./models/Bus');
 // const Crew = require('./models/Crew');
