@@ -107,7 +107,17 @@ const BusList = () => {
                 <p><strong>Capacity:</strong> {filteredBuses[currentIndex].capacity}</p>
                 <p><strong>Status:</strong> {filteredBuses[currentIndex].status}</p>
                 <p><strong>AssignedRouteId:</strong> {filteredBuses[currentIndex].assignedRouteId ?? 'NA'}</p>
-                <p><strong>AssignedCrewId:</strong> {filteredBuses[currentIndex].currentCrewId ?? 'NA'}</p>
+                <p><strong>Assigned Crew:</strong> 
+  {filteredBuses[currentIndex].assignedCrewId && filteredBuses[currentIndex].assignedCrewId.length > 0
+    ? filteredBuses[currentIndex].assignedCrewId.map((crewId, index) => (
+        <span key={index}>
+          {crewId}
+          {index !== filteredBuses[currentIndex].assignedCrewId.length - 1 && ', '}
+        </span>
+      ))
+    : 'NA'}
+</p>
+
                 <p><strong>Last Maintenance Date:</strong> {filteredBuses[currentIndex].lastMaintenanceDate ?? 'NA'}</p>
               </div>
 

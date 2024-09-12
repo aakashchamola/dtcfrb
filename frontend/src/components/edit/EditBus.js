@@ -121,7 +121,7 @@ const EditBus = () => {
           </select>
         </div>
 
-        <div style={{ marginBottom: '15px' }}>
+        {/* <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Assigned Route ID</label>
           <input
             type="text"
@@ -141,7 +141,7 @@ const EditBus = () => {
             onChange={handleInputChange}
             style={inputStyle}
           />
-        </div>
+         </div> */}
 
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Last Maintenance Date</label>

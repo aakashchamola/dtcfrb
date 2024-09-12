@@ -91,7 +91,17 @@ const SchedulesList = () => {
             <div style={detailsContainerStyle}>
               <div style={detailsStyle}>
                 <p><strong>Bus ID:</strong> {filteredSchedules[currentIndex].busId}</p>
-                <p><strong>Crew ID:</strong> {filteredSchedules[currentIndex].crewId}</p>
+                <p><strong>Assigned CrewId:</strong> 
+  {filteredSchedules[currentIndex].crewId && filteredSchedules[currentIndex].crewId.length > 0
+    ? filteredSchedules[currentIndex].crewId.map((crewId, index) => (
+        <span key={index}>
+          {crewId}
+          {index !== filteredSchedules[currentIndex].crewId.length - 1 && ', '}
+        </span>
+      ))
+    : 'NA'}
+</p>
+
                 <p><strong>Route ID:</strong> {filteredSchedules[currentIndex].routeId}</p>
                 <p><strong>Shift Start Time:</strong> {new Date(filteredSchedules[currentIndex].shiftStartTime).toLocaleString()}</p>
                 <p><strong>Shift End Time:</strong> {new Date(filteredSchedules[currentIndex].shiftEndTime).toLocaleString()}</p>

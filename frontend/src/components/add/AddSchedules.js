@@ -8,21 +8,22 @@ import {
 
 const AddSchedule = () => {
   const [busId, setBusId] = useState('');
-  const [crewId, setCrewId] = useState('');
+  const [crewId, setCrewId] = useState([]); // Changed to an array
   const [routeId, setRouteId] = useState('');
   const [shiftStartTime, setShiftStartTime] = useState('');
   const [shiftEndTime, setShiftEndTime] = useState('');
   const [scheduleType, setScheduleType] = useState('Linked');
   const [handoverBusId, setHandoverBusId] = useState('');
   const [status, setStatus] = useState('scheduled');
+  const [newCrewId, setNewCrewId] = useState(''); // For adding new crew IDs
 
   const validateForm = () => {
     if (!busId) {
       toast.error('Bus ID is required');
       return false;
     }
-    if (!crewId) {
-      toast.error('Crew ID is required');
+    if (crewId.length === 0) {
+      toast.error('At least one Crew ID is required');
       return false;
     }
     if (!routeId) {
@@ -40,6 +41,17 @@ const AddSchedule = () => {
     return true;
   };
 
+  const handleAddCrewId = () => {
+    if (newCrewId.trim()) {
+      setCrewId([...crewId, newCrewId.trim()]);
+      setNewCrewId('');
+    }
+  };
+
+  const handleRemoveCrewId = (index) => {
+    setCrewId(crewId.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -47,7 +59,7 @@ const AddSchedule = () => {
     try {
       const newSchedule = {
         busId,
-        crewId,
+        crewId, // This is now an array
         routeId,
         shiftStartTime: new Date(shiftStartTime),
         shiftEndTime: new Date(shiftEndTime),
@@ -61,7 +73,7 @@ const AddSchedule = () => {
 
       // Reset form after submission
       setBusId('');
-      setCrewId('');
+      setCrewId([]);
       setRouteId('');
       setShiftStartTime('');
       setShiftEndTime('');
@@ -89,15 +101,31 @@ const AddSchedule = () => {
           />
         </div>
 
+        {/* Updated Crew ID Section */}
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Crew ID</label>
-          <input
-            type="text"
-            value={crewId}
-            onChange={(e) => setCrewId(e.target.value)}
-            style={inputStyle}
-            required
-          />
+          <div>
+            <input
+              type="text"
+              value={newCrewId}
+              onChange={(e) => setNewCrewId(e.target.value)}
+              style={inputStyle}
+              placeholder="Enter Crew ID"
+            />
+            <button type="button" onClick={handleAddCrewId} style={buttonStyle}>
+              Add Crew
+            </button>
+          </div>
+          <ul>
+            {crewId.map((id, index) => (
+              <li key={index}>
+                {id}
+                <button type="button" onClick={() => handleRemoveCrewId(index)}>
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div style={{ marginBottom: '15px' }}>
