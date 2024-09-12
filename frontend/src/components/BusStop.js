@@ -2,29 +2,29 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-const CrewList = () => {
-  const [crews, setCrews] = useState([]);
+const BusStopList = () => {
+  const [busStops, setBusStops] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterProperty, setFilterProperty] = useState('name');
+  const [filterProperty, setFilterProperty] = useState('stopName');
 
-  const fetchCrews = async () => {
+  const fetchBusStops = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/api/crew');
-      setCrews(response.data);
+      const response = await axios.get('http://localhost:5001/api/busstop');
+      setBusStops(response.data);
     } catch (error) {
-      console.error('Error fetching crews', error);
+      console.error('Error fetching bus stops', error);
     }
   };
 
   const handleShowAll = () => {
-    fetchCrews();
+    fetchBusStops();
     setShowAll(true);
   };
 
   const handleNext = () => {
-    if (currentIndex < crews.length - 1) {
+    if (currentIndex < busStops.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -35,17 +35,17 @@ const CrewList = () => {
     }
   };
 
-  const filteredCrews = crews.filter((crew) => {
-    const propertyValue = crew[filterProperty]?.toString().toLowerCase();
+  const filteredBusStops = busStops.filter((stop) => {
+    const propertyValue = stop[filterProperty]?.toString().toLowerCase();
     return propertyValue?.startsWith(searchTerm.toLowerCase());
   });
 
   return (
     <div>
-      <h2>Crew Management</h2>
-      <button onClick={handleShowAll}>Show All Crews</button>
-      <Link to="/add-crew">
-        <button>Add Crew</button>
+      <h2>Bus Stop Management</h2>
+      <button onClick={handleShowAll}>Show All Bus Stops</button>
+      <Link to="/add-stop">
+        <button>Add Bus Stop</button>
       </Link>
 
       {showAll && (
@@ -59,34 +59,33 @@ const CrewList = () => {
               style={{ marginRight: '10px', padding: '5px' }}
             />
             <select value={filterProperty} onChange={(e) => setFilterProperty(e.target.value)} style={{ padding: '5px' }}>
-              <option value="name">Name</option>
-              <option value="role">Role</option>
-              <option value="licenseNumber">License Number</option>
+              <option value="stopName">Stop Name</option>
+              <option value="city">City</option>
             </select>
           </div>
 
-          {filteredCrews.length > 0 ? (
+          {filteredBusStops.length > 0 ? (
             <div>
               <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
-                <p><strong>Name:</strong> {filteredCrews[currentIndex].name}</p>
-                <p><strong>Role:</strong> {filteredCrews[currentIndex].role}</p>
-                <p><strong>License Number:</strong> {filteredCrews[currentIndex].licenseNumber ?? 'NA'}</p>
-                <p><strong>Availability Status:</strong> {filteredCrews[currentIndex].availabilityStatus}</p>
+                <p><strong>Stop Name:</strong> {filteredBusStops[currentIndex].stopName}</p>
+                <p><strong>City:</strong> {filteredBusStops[currentIndex].city}</p>
+                <p><strong>Latitude:</strong> {filteredBusStops[currentIndex].location.latitude}</p>
+                <p><strong>Longitude:</strong> {filteredBusStops[currentIndex].location.longitude}</p>
               </div>
 
-              {filteredCrews.length > 1 && currentIndex > 0 && (
+              {filteredBusStops.length > 1 && currentIndex > 0 && (
                 <div style={{ textAlign: 'left' }}>
                   <button onClick={handlePrevious}>Previous</button>
                 </div>
               )}
-              {filteredCrews.length > 1 && currentIndex < filteredCrews.length - 1 && (
+              {filteredBusStops.length > 1 && currentIndex < filteredBusStops.length - 1 && (
                 <div style={{ textAlign: 'right' }}>
                   <button onClick={handleNext}>Next</button>
                 </div>
               )}
             </div>
           ) : (
-            <p>No crews available</p>
+            <p>No bus stops available</p>
           )}
         </div>
       )}
@@ -94,4 +93,4 @@ const CrewList = () => {
   );
 };
 
-export default CrewList;
+export default BusStopList;

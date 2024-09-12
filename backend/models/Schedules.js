@@ -7,7 +7,7 @@ const ScheduleSchema = new mongoose.Schema({
   shiftStartTime: { type: Date, required: true },
   shiftEndTime: { type: Date, required: true },
   scheduleType: { type: String, enum: ['Linked', 'Unlinked'], required: true },
-  handoverBusId: { type: mongoose.Schema.Types.ObjectId, ref: 'Bus' },
+  handoverBusId: { type: mongoose.Schema.Types.ObjectId, ref: 'Bus', default: null  },
   status: { type: String, default: 'scheduled' }
 });
 

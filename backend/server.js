@@ -48,11 +48,11 @@ const scheduleRoutes = require('./routes/scheduleRoutes');
 // const realTimeDataRoutes = require('./routes/realTimeDataRoutes');
 
 // Register routes
-app.use('/api/buses', busRoutes);
+app.use('/api/bus', busRoutes);
 app.use('/api/crew', crewRoutes);
-app.use('/api/busstops', busStopRoutes);
-app.use('/api/routes', routeRoutes);
-app.use('/api/schedules', scheduleRoutes);
+app.use('/api/busstop', busStopRoutes);
+app.use('/api/route', routeRoutes);
+app.use('/api/schedule', scheduleRoutes);
 // app.use('/api/routeoverlaps', routeOverlapRoutes);
 // app.use('/api/realtimedata', realTimeDataRoutes);
 
