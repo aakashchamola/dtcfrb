@@ -6,7 +6,7 @@ import {
   inputStyle,
   formContainerStyle,
   labelStyle,
-} from '../ui/style'; // Importing styling
+} from '../ui/Style'; // Ensure this path is correct
 
 const EditBusStop = () => {
   const { id } = useParams();
@@ -47,6 +47,8 @@ const EditBusStop = () => {
           [key]: value
         }
       }));
+    } else if (name === 'routes') {
+      setFormData({ ...formData, routes: value.split(',').map(route => route.trim()) });
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -77,87 +79,72 @@ const EditBusStop = () => {
       {busStop ? (
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '15px' }}>
-            <label style={labelStyle}>
-              <strong>Stop Name:</strong>
-              <input
-                type="text"
-                name="stopName"
-                value={formData.stopName}
-                onChange={handleChange}
-                required
-                style={inputStyle}
-              />
-            </label>
+            <label style={labelStyle}>Stop Name</label>
+            <input
+              type="text"
+              name="stopName"
+              value={formData.stopName}
+              onChange={handleChange}
+              style={inputStyle}
+              required
+            />
           </div>
 
           <div style={{ marginBottom: '15px' }}>
-            <label style={labelStyle}>
-              <strong>Latitude:</strong>
-              <input
-                type="text"
-                name="location.latitude"
-                value={formData.location.latitude}
-                onChange={handleChange}
-                required
-                style={inputStyle}
-              />
-            </label>
+            <label style={labelStyle}>Latitude</label>
+            <input
+              type="text"
+              name="location.latitude"
+              value={formData.location.latitude}
+              onChange={handleChange}
+              style={inputStyle}
+              required
+            />
           </div>
 
           <div style={{ marginBottom: '15px' }}>
-            <label style={labelStyle}>
-              <strong>Longitude:</strong>
-              <input
-                type="text"
-                name="location.longitude"
-                value={formData.location.longitude}
-                onChange={handleChange}
-                required
-                style={inputStyle}
-              />
-            </label>
+            <label style={labelStyle}>Longitude</label>
+            <input
+              type="text"
+              name="location.longitude"
+              value={formData.location.longitude}
+              onChange={handleChange}
+              style={inputStyle}
+              required
+            />
           </div>
 
           <div style={{ marginBottom: '15px' }}>
-            <label style={labelStyle}>
-              <strong>City:</strong>
-              <input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                required
-                style={inputStyle}
-              />
-            </label>
+            <label style={labelStyle}>City</label>
+            <input
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleChange}
+              style={inputStyle}
+              required
+            />
           </div>
 
           <div style={{ marginBottom: '15px' }}>
-            <label style={labelStyle}>
-              <strong>Routes (comma separated):</strong>
-              <input
-                type="text"
-                name="routes"
-                value={formData.routes.join(', ')}
-                onChange={(e) =>
-                  setFormData({ ...formData, routes: e.target.value.split(',').map((route) => route.trim()) })
-                }
-                style={inputStyle}
-              />
-            </label>
+            <label style={labelStyle}>Routes (comma separated)</label>
+            <input
+              type="text"
+              name="routes"
+              value={formData.routes.join(', ')}
+              onChange={handleChange}
+              style={inputStyle}
+            />
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-            <button
-              type="submit"
-              style={buttonStyle}
-            >
+            <button type="submit" style={buttonStyle}>
               Update
             </button>
             <button
               type="button"
               onClick={handleDelete}
-              style={{ ...buttonStyle, backgroundColor: 'red' }} // Apply red background for delete
+              style={{ ...buttonStyle, backgroundColor: 'red' }}
             >
               Delete
             </button>

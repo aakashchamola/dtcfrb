@@ -1,9 +1,10 @@
+const BusStop = require('../models/BusStop');
 const Route = require('../models/Route');
 
 // Get all routes
 exports.getAllRoutes = async (req, res) => {
     try {
-        const routes = await Route.find().populate('busStops');
+        const routes = await Route.find();
         res.json(routes);
     } catch (err) {
         res.status(500).json({ message: 'Server Error' });
@@ -13,7 +14,7 @@ exports.getAllRoutes = async (req, res) => {
 // Get a route by ID
 exports.getRouteById = async (req, res) => {
     try {
-        const route = await Route.findById(req.params.id).populate('busStops');
+        const route = await Route.findById(req.params.id);
         if (!route) return res.status(404).json({ message: 'Route not found' });
         res.json(route);
     } catch (err) {
@@ -25,7 +26,8 @@ exports.getRouteById = async (req, res) => {
 exports.addRoute = async (req, res) => {
     try {
         const newRoute = new Route(req.body);
-        await newRoute.save();
+        (await newRoute.save())
+
         res.json(newRoute);
     } catch (err) {
         res.status(400).json({ message: 'Invalid data' });

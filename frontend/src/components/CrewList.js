@@ -11,7 +11,7 @@ import {
   navButtonStyle,
   centeredContainerStyle,
   searchContainerStyle,
-} from './ui/style'; // Ensure your styles are defined
+} from './ui/Style'; // Ensure your styles are defined
 
 const CrewList = () => {
   const [crews, setCrews] = useState([]);

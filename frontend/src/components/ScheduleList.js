@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   buttonStyle, 
   inputStyle, 
@@ -11,7 +11,7 @@ import {
   navButtonStyle, 
   centeredContainerStyle, 
   searchContainerStyle 
-} from './ui/style';
+} from './ui/Style';
 
 const SchedulesList = () => {
   const [schedules, setSchedules] = useState([]);
@@ -19,7 +19,7 @@ const SchedulesList = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterProperty, setFilterProperty] = useState('status');
-
+  const navigate = useNavigate();
   const fetchSchedules = async () => {
     try {
       const response = await axios.get('http://localhost:5001/api/schedule');
@@ -44,6 +44,10 @@ const SchedulesList = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
+  };
+  const handleEdit = () => {
+    const scheduleId = filteredSchedules[currentIndex]._id;
+    navigate(`/edit-schedule/${scheduleId}`); // Use navigate for redirection
   };
 
   const filteredSchedules = schedules.filter((schedule) => {
@@ -98,6 +102,7 @@ const SchedulesList = () => {
                 <button onClick={handlePrevious} disabled={currentIndex === 0} style={navButtonStyle}>
                   Previous
                 </button>
+                <button onClick={handleEdit} style={navButtonStyle}>Edit</button>
                 <button onClick={handleNext} disabled={currentIndex === filteredSchedules.length - 1} style={navButtonStyle}>
                   Next
                 </button>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { buttonStyle, inputStyle, formContainerStyle, labelStyle,selectStyle} from '../ui/Style';
 
 const AddRoute = () => {
   const [routeNumber, setRouteNumber] = useState('');
@@ -48,24 +49,18 @@ const AddRoute = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) {
-      return; // Prevent submission if validation fails
-    }
+    if (!validateForm()) return;
 
     try {
-      const newRoute = {
+      await axios.post('http://localhost:5001/api/route', {
         routeNumber,
         stops,
-        totalDistance: Number(totalDistance),
-        totalTime: Number(totalTime),
+        totalDistance,
+        totalTime,
         congestionStatus,
-        activeBuses: activeBuses.filter(bus => bus), // remove empty entries
-      };
-
-      await axios.post('http://localhost:5001/api/route', newRoute);
+        activeBuses
+      });
       toast.success('Route added successfully');
-
-      // Reset form after submission
       setRouteNumber('');
       setStops([{ busStopId: '', order: '', arrivalTime: '', departureTime: '' }]);
       setTotalDistance('');
@@ -73,100 +68,126 @@ const AddRoute = () => {
       setCongestionStatus('');
       setActiveBuses(['']);
     } catch (error) {
-      toast.error('Error adding route');
       console.error('Error adding route', error);
+      toast.error('Error adding route');
     }
   };
 
   return (
-    <div>
-      <h2>Add Route</h2>
+    <div style={formContainerStyle}>
+      <h2>Add New Route</h2>
       <form onSubmit={handleSubmit}>
-        <label>
-          Route Number:
-          <input type="text" value={routeNumber} onChange={(e) => setRouteNumber(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Stops:
-          {stops.map((stop, index) => (
-            <div key={index}>
-              <label>
-                Bus Stop ID:
-                <input
-                  type="text"
-                  value={stop.busStopId}
-                  onChange={(e) => handleStopChange(index, 'busStopId', e.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                Order:
-                <input
-                  type="number"
-                  value={stop.order}
-                  onChange={(e) => handleStopChange(index, 'order', e.target.value)}
-                  required
-                />
-              </label>
-              <label>
-                Arrival Time:
-                <input
-                  type="datetime-local"
-                  value={stop.arrivalTime}
-                  onChange={(e) => handleStopChange(index, 'arrivalTime', e.target.value)}
-                />
-              </label>
-              <label>
-                Departure Time:
-                <input
-                  type="datetime-local"
-                  value={stop.departureTime}
-                  onChange={(e) => handleStopChange(index, 'departureTime', e.target.value)}
-                />
-              </label>
-              <button type="button" onClick={() => removeStop(index)}>
-                Remove Stop
-              </button>
-              <br />
-            </div>
-          ))}
-          <button type="button" onClick={addStop}>
-            Add Stop
-          </button>
-        </label>
-        <br />
-        <label>
-          Total Distance (km):
-          <input type="number" value={totalDistance} onChange={(e) => setTotalDistance(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Total Time (minutes):
-          <input type="number" value={totalTime} onChange={(e) => setTotalTime(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Congestion Status:
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Route Number</label>
           <input
             type="text"
+            value={routeNumber}
+            onChange={(e) => setRouteNumber(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <h3>Stops</h3>
+        {stops.map((stop, index) => (
+          <div key={index} style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ccc' }}>
+            <div style={{ marginBottom: '10px' }}>
+              <label style={labelStyle}>Bus Stop ID</label>
+              <input
+                type="text"
+                value={stop.busStopId}
+                onChange={(e) => handleStopChange(index, 'busStopId', e.target.value)}
+                style={inputStyle}
+                required
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <label style={labelStyle}>Order</label>
+              <input
+                type="number"
+                value={stop.order}
+                onChange={(e) => handleStopChange(index, 'order', e.target.value)}
+                style={inputStyle}
+                required
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <label style={labelStyle}>Arrival Time</label>
+              <input
+                type="datetime-local"
+                value={stop.arrivalTime}
+                onChange={(e) => handleStopChange(index, 'arrivalTime', e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+            <div style={{ marginBottom: '10px' }}>
+              <label style={labelStyle}>Departure Time</label>
+              <input
+                type="datetime-local"
+                value={stop.departureTime}
+                onChange={(e) => handleStopChange(index, 'departureTime', e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+            <button type="button" onClick={() => removeStop(index)} style={{ ...buttonStyle, backgroundColor: 'red' }}>
+              Remove Stop
+            </button>
+          </div>
+        ))}
+        <button type="button" onClick={addStop} style={buttonStyle}>
+          Add Stop
+        </button>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Total Distance (km)</label>
+          <input
+            type="number"
+            value={totalDistance}
+            onChange={(e) => setTotalDistance(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Total Time (Minutes)</label>
+          <input
+            type="number"
+            value={totalTime}
+            onChange={(e) => setTotalTime(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Congestion Status</label>
+          <select
             value={congestionStatus}
             onChange={(e) => setCongestionStatus(e.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Active Buses (comma-separated Bus IDs):
+            style={selectStyle}
+          >
+            <option value="NA">Select</option>
+            <option value="Clear">Clear</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Congested">Congested</option>
+          </select>
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Active Buses (comma-separated Bus IDs)</label>
           <input
             type="text"
-            value={activeBuses.join(',')}
-            onChange={(e) => setActiveBuses(e.target.value.split(','))}
+            value={activeBuses.join(', ')}
+            onChange={(e) => setActiveBuses(e.target.value.split(',').map(bus => bus.trim()))}
+            style={inputStyle}
           />
-        </label>
-        <br />
-        <button type="submit">Add Route</button>
+        </div>
+
+        <button type="submit" style={buttonStyle}>
+          Add Route
+        </button>
       </form>
-      <ToastContainer /> {/* Toast container for notifications */}
+      <ToastContainer />
     </div>
   );
 };

@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+  buttonStyle,
+  inputStyle,
+  formContainerStyle,
+  labelStyle,
+  selectStyle,
+} from '../ui/Style';
 
 const AddCrew = () => {
   const [name, setName] = useState('');
@@ -69,64 +76,113 @@ const AddCrew = () => {
   };
 
   return (
-    <div>
+    <div style={formContainerStyle}>
       <h2>Add Crew</h2>
       <form onSubmit={handleSubmit}>
-        <label>
-          Crew Name:
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Role:
-          <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Crew Name</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Role</label>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            style={selectStyle}
+            required
+          >
             <option value="NA">Select</option>
             <option value="Driver">Driver</option>
             <option value="Conductor">Conductor</option>
           </select>
-        </label>
-        <br />
-        <label>
-          License Number:
-          <input type="text" value={licenseNumber} onChange={(e) => setLicenseNumber(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Availability Status:
-          <select value={availabilityStatus} onChange={(e) => setAvailabilityStatus(e.target.value)}>
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>License Number</label>
+          <input
+            type="text"
+            value={licenseNumber}
+            onChange={(e) => setLicenseNumber(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Availability Status</label>
+          <select
+            value={availabilityStatus}
+            onChange={(e) => setAvailabilityStatus(e.target.value)}
+            style={selectStyle}
+          >
             <option value="available">Available</option>
             <option value="unavailable">Unavailable</option>
           </select>
-        </label>
-        <br />
-        <label>
-          Assigned Bus ID (Optional):
-          <input type="text" value={assignedBusId} onChange={(e) => setAssignedBusId(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Rest Period Start Time (Optional):
-          <input type="datetime-local" value={restStartTime} onChange={(e) => setRestStartTime(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Rest Period End Time (Optional):
-          <input type="datetime-local" value={restEndTime} onChange={(e) => setRestEndTime(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Shift Start Time (Optional):
-          <input type="datetime-local" value={shiftStartTime} onChange={(e) => setShiftStartTime(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Shift End Time (Optional):
-          <input type="datetime-local" value={shiftEndTime} onChange={(e) => setShiftEndTime(e.target.value)} />
-        </label>
-        <br />
-        <button type="submit">Add Crew</button>
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Assigned Bus ID</label>
+          <input
+            type="text"
+            value={assignedBusId}
+            onChange={(e) => setAssignedBusId(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+
+        <h3>Rest Period</h3>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Rest Start Time</label>
+          <input
+            type="datetime-local"
+            value={restStartTime}
+            onChange={(e) => setRestStartTime(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Rest End Time</label>
+          <input
+            type="datetime-local"
+            value={restEndTime}
+            onChange={(e) => setRestEndTime(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+
+        <h3>Shift Details</h3>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Shift Start Time</label>
+          <input
+            type="datetime-local"
+            value={shiftStartTime}
+            onChange={(e) => setShiftStartTime(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Shift End Time</label>
+          <input
+            type="datetime-local"
+            value={shiftEndTime}
+            onChange={(e) => setShiftEndTime(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+
+        <button type="submit" style={buttonStyle}>
+          Add Crew
+        </button>
       </form>
-      <ToastContainer /> {/* Toast container for notifications */}
+      <ToastContainer />
     </div>
   );
 };

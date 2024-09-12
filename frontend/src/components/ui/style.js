@@ -20,7 +20,7 @@ export const buttonStyle = {
     padding: '10px',
     border: '1px solid #ddd',
     borderRadius: '5px',
-    width: '30%',
+    width: '60%',
   };
   
   export const detailsContainerStyle = {
@@ -75,7 +75,7 @@ export const buttonStyle = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'top',
     minHeight: '100vh', // Full-height for better centering
     padding: '20px',
   };

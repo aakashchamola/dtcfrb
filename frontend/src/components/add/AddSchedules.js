@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+  buttonStyle, inputStyle, selectStyle, labelStyle, formContainerStyle
+} from '../ui/Style'; // Ensure these styles are defined in your styles file
 
 const AddSchedule = () => {
   const [busId, setBusId] = useState('');
@@ -39,9 +42,7 @@ const AddSchedule = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) {
-      return; // Prevent submission if validation fails
-    }
+    if (!validateForm()) return;
 
     try {
       const newSchedule = {
@@ -51,7 +52,7 @@ const AddSchedule = () => {
         shiftStartTime: new Date(shiftStartTime),
         shiftEndTime: new Date(shiftEndTime),
         scheduleType,
-        handoverBusId: handoverBusId || null, // optional handoverBusId
+        handoverBusId: handoverBusId || null, // Optional handoverBusId
         status
       };
 
@@ -74,59 +75,104 @@ const AddSchedule = () => {
   };
 
   return (
-    <div>
+    <div style={formContainerStyle}>
       <h2>Add Schedule</h2>
       <form onSubmit={handleSubmit}>
-        <label>
-          Bus ID:
-          <input type="text" value={busId} onChange={(e) => setBusId(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Crew ID:
-          <input type="text" value={crewId} onChange={(e) => setCrewId(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Route ID:
-          <input type="text" value={routeId} onChange={(e) => setRouteId(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Shift Start Time:
-          <input type="datetime-local" value={shiftStartTime} onChange={(e) => setShiftStartTime(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Shift End Time:
-          <input type="datetime-local" value={shiftEndTime} onChange={(e) => setShiftEndTime(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Schedule Type:
-          <select value={scheduleType} onChange={(e) => setScheduleType(e.target.value)}>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Bus ID</label>
+          <input
+            type="text"
+            value={busId}
+            onChange={(e) => setBusId(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Crew ID</label>
+          <input
+            type="text"
+            value={crewId}
+            onChange={(e) => setCrewId(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Route ID</label>
+          <input
+            type="text"
+            value={routeId}
+            onChange={(e) => setRouteId(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Shift Start Time</label>
+          <input
+            type="datetime-local"
+            value={shiftStartTime}
+            onChange={(e) => setShiftStartTime(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Shift End Time</label>
+          <input
+            type="datetime-local"
+            value={shiftEndTime}
+            onChange={(e) => setShiftEndTime(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Schedule Type</label>
+          <select
+            value={scheduleType}
+            onChange={(e) => setScheduleType(e.target.value)}
+            style={selectStyle}
+          >
             <option value="Linked">Linked</option>
             <option value="Unlinked">Unlinked</option>
           </select>
-        </label>
-        <br />
-        <label>
-          Handover Bus ID (Optional):
-          <input type="text" value={handoverBusId} onChange={(e) => setHandoverBusId(e.target.value)} />
-        </label>
-        <br />
-        <label>
-          Status:
-          <select value={status} onChange={(e) => setStatus(e.target.value)}>
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Handover Bus ID (Optional)</label>
+          <input
+            type="text"
+            value={handoverBusId}
+            onChange={(e) => setHandoverBusId(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Status</label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            style={selectStyle}
+          >
             <option value="scheduled">Scheduled</option>
             <option value="completed">Completed</option>
             <option value="cancelled">Cancelled</option>
           </select>
-        </label>
-        <br />
-        <button type="submit">Add Schedule</button>
+        </div>
+
+        <button type="submit" style={buttonStyle}>
+          Add Schedule
+        </button>
       </form>
-      <ToastContainer /> {/* Toast container for notifications */}
+      <ToastContainer />
     </div>
   );
 };

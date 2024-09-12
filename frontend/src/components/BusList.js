@@ -11,7 +11,7 @@ import {
   navButtonStyle, 
   centeredContainerStyle,
   searchContainerStyle,
-} from './ui/style';
+} from './ui/Style';
 
 
 

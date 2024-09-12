@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   buttonStyle, 
   inputStyle, 
@@ -11,7 +11,7 @@ import {
   navButtonStyle, 
   centeredContainerStyle, 
   searchContainerStyle 
-} from './ui/style';
+} from './ui/Style';
 
 const RoutesList = () => {
   const [routes, setRoutes] = useState([]);
@@ -19,7 +19,7 @@ const RoutesList = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterProperty, setFilterProperty] = useState('routeNumber');
-
+  const navigate = useNavigate(); // Initialize the navigate hook
   const fetchRoutes = async () => {
     try {
       const response = await axios.get('http://localhost:5001/api/route');
@@ -50,7 +50,12 @@ const RoutesList = () => {
     const propertyValue = route[filterProperty]?.toString().toLowerCase();
     return propertyValue?.startsWith(searchTerm.toLowerCase());
   });
-
+  const handleEdit = () => {
+    const routeId = filteredRoutes[currentIndex]?._id;
+    if (routeId) {
+      navigate(`/edit-route/${routeId}`);
+    }
+  };
   return (
     <div style={centeredContainerStyle}>
       <h2>Route Management</h2>
@@ -96,6 +101,7 @@ const RoutesList = () => {
                 <button onClick={handlePrevious} disabled={currentIndex === 0} style={navButtonStyle}>
                   Previous
                 </button>
+                <button onClick={handleEdit} style={navButtonStyle}>Edit</button>
                 <button onClick={handleNext} disabled={currentIndex === filteredRoutes.length - 1} style={navButtonStyle}>
                   Next
                 </button>

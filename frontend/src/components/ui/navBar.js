@@ -1,27 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './NavBar.css'; // Import the CSS file
 
 const Navbar = () => {
   return (
-    <nav>
-      <ul style={{ display: 'flex', listStyleType: 'none', padding: 0 }}>
-        <li style={{ marginRight: 20 }}>
-          <Link to="/">Home</Link>
+    <nav className="navbar">
+      <ul className="nav-list">
+        <li className="nav-item">
+          <Link to="/" className="nav-link">Home</Link>
         </li>
-        <li style={{ marginRight: 20 }}>
-          <Link to="/buses">Bus</Link>
+        <li className="nav-item">
+          <Link to="/buses" className="nav-link">Buses</Link>
         </li>
-        <li style={{ marginRight: 20 }}>
-          <Link to="/routes">Routes</Link>
+        <li className="nav-item">
+          <Link to="/routes" className="nav-link">Routes</Link>
         </li>
-        <li style={{ marginRight: 20 }}>
-          <Link to="/Crews">Crews</Link>
+        <li className="nav-item">
+          <Link to="/crews" className="nav-link">Crews</Link>
         </li>
-        <li style={{ marginRight: 20 }}>
-          <Link to="/schedules">Schedules</Link>
+        <li className="nav-item">
+          <Link to="/schedules" className="nav-link">Schedules</Link>
         </li>
-        <li>
-          <Link to="/bus-stops">Bus Stops</Link>
+        <li className="nav-item">
+          <Link to="/bus-stops" className="nav-link">Bus Stops</Link>
         </li>
       </ul>
     </nav>

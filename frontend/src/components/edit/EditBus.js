@@ -6,7 +6,8 @@ import {
   inputStyle,
   formContainerStyle,
   labelStyle,
-} from '../ui/style';
+  selectStyle
+} from '../ui/Style'; // Ensure this path is correct
 
 const EditBus = () => {
   const { id } = useParams();
@@ -14,9 +15,9 @@ const EditBus = () => {
 
   const [formData, setFormData] = useState({
     busNumber: '',
-    busType: '',
+    busType: 'NA',
     capacity: '',
-    status: '',
+    status: 'NA',
     assignedRouteId: '',
     currentCrewId: '',
     lastMaintenanceDate: ''
@@ -66,71 +67,92 @@ const EditBus = () => {
     <div style={formContainerStyle}>
       <h2>Edit Bus</h2>
       <form onSubmit={handleSubmit}>
-        <label style={labelStyle}>Bus Number</label>
-        <input
-          type="text"
-          name="busNumber"
-          value={formData.busNumber}
-          onChange={handleInputChange}
-          style={inputStyle}
-          required
-        />
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Bus Number</label>
+          <input
+            type="text"
+            name="busNumber"
+            value={formData.busNumber}
+            onChange={handleInputChange}
+            style={inputStyle}
+            required
+          />
+        </div>
 
-        <label style={labelStyle}>Bus Type</label>
-        <input
-          type="text"
-          name="busType"
-          value={formData.busType}
-          onChange={handleInputChange}
-          style={inputStyle}
-          required
-        />
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Bus Type</label>
+          <select
+            name="busType"
+            value={formData.busType}
+            onChange={handleInputChange}
+            style={selectStyle}
+            required
+          >
+            <option value="NA">Select</option>
+            <option value="AC">AC</option>
+            <option value="Non-AC">Non-AC</option>
+          </select>
+        </div>
 
-        <label style={labelStyle}>Capacity</label>
-        <input
-          type="number"
-          name="capacity"
-          value={formData.capacity}
-          onChange={handleInputChange}
-          style={inputStyle}
-          required
-        />
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Capacity</label>
+          <input
+            type="number"
+            name="capacity"
+            value={formData.capacity}
+            onChange={handleInputChange}
+            style={inputStyle}
+            required
+          />
+        </div>
 
-        <label style={labelStyle}>Status</label>
-        <input
-          type="text"
-          name="status"
-          value={formData.status}
-          onChange={handleInputChange}
-          style={inputStyle}
-        />
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Status</label>
+          <select
+            name="status"
+            value={formData.status}
+            onChange={handleInputChange}
+            style={selectStyle}
+          >
+            <option value="NA">Select</option>
+            <option value="available">Available</option>
+            <option value="in-service">In Service</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
+        </div>
 
-        <label style={labelStyle}>Assigned Route ID</label>
-        <input
-          type="text"
-          name="assignedRouteId"
-          value={formData.assignedRouteId}
-          onChange={handleInputChange}
-          style={inputStyle}
-        />
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Assigned Route ID</label>
+          <input
+            type="text"
+            name="assignedRouteId"
+            value={formData.assignedRouteId}
+            onChange={handleInputChange}
+            style={inputStyle}
+          />
+        </div>
 
-        <label style={labelStyle}>Current Crew ID</label>
-        <input
-          type="text"
-          name="currentCrewId"
-          value={formData.currentCrewId}
-          onChange={handleInputChange}
-          style={inputStyle}
-        />
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Current Crew ID</label>
+          <input
+            type="text"
+            name="currentCrewId"
+            value={formData.currentCrewId}
+            onChange={handleInputChange}
+            style={inputStyle}
+          />
+        </div>
 
-        <label style={labelStyle}>Last Maintenance Date</label>
-        <input
-          type="date"
-          name="lastMaintenanceDate"
-          value={formData.lastMaintenanceDate}
-          onChange={handleInputChange}
-          style={inputStyle}
-        />
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Last Maintenance Date</label>
+          <input
+            type="date"
+            name="lastMaintenanceDate"
+            value={formData.lastMaintenanceDate}
+            onChange={handleInputChange}
+            style={inputStyle}
+          />
+        </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
           <button type="submit" style={buttonStyle}>

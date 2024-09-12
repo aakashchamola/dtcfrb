@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {
+  buttonStyle,
+  inputStyle,
+  formContainerStyle,
+  labelStyle,} from '../ui/Style'; // Ensure this path is correct
 
 const AddBusStop = () => {
   const [stopName, setStopName] = useState('');
@@ -63,37 +68,68 @@ const AddBusStop = () => {
   };
 
   return (
-    <div>
+    <div style={formContainerStyle}>
       <h2>Add Bus Stop</h2>
       <form onSubmit={handleSubmit}>
-        <label>
-          Stop Name:
-          <input type="text" value={stopName} onChange={(e) => setStopName(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Latitude:
-          <input type="text" value={latitude} onChange={(e) => setLatitude(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Longitude:
-          <input type="text" value={longitude} onChange={(e) => setLongitude(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          City:
-          <input type="text" value={city} onChange={(e) => setCity(e.target.value)} required />
-        </label>
-        <br />
-        <label>
-          Routes (Optional, comma-separated Route IDs):
-          <input type="text" value={routes} onChange={(e) => setRoutes(e.target.value)} />
-        </label>
-        <br />
-        <button type="submit">Add Bus Stop</button>
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Stop Name</label>
+          <input
+            type="text"
+            value={stopName}
+            onChange={(e) => setStopName(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Latitude</label>
+          <input
+            type="text"
+            value={latitude}
+            onChange={(e) => setLatitude(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Longitude</label>
+          <input
+            type="text"
+            value={longitude}
+            onChange={(e) => setLongitude(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>City</label>
+          <input
+            type="text"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            style={inputStyle}
+            required
+          />
+        </div>
+
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Routes (Optional, comma-separated Route IDs)</label>
+          <input
+            type="text"
+            value={routes}
+            onChange={(e) => setRoutes(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+
+        <button type="submit" style={buttonStyle}>
+          Add Bus Stop
+        </button>
       </form>
-      <ToastContainer /> {/* Toast container for notifications */}
+      <ToastContainer />
     </div>
   );
 };

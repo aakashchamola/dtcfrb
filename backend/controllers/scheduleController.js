@@ -3,7 +3,7 @@ const Schedule = require('../models/Schedules');
 // Get all schedules
 exports.getAllSchedules = async (req, res) => {
     try {
-        const schedules = await Schedule.find().populate('bus crew');
+        const schedules = await Schedule.find();
         res.json(schedules);
     } catch (err) {
         res.status(500).json({ message: 'Server Error' });
@@ -13,7 +13,7 @@ exports.getAllSchedules = async (req, res) => {
 // Get a schedule by ID
 exports.getScheduleById = async (req, res) => {
     try {
-        const schedule = await Schedule.findById(req.params.id).populate('bus crew');
+        const schedule = await Schedule.findById(req.params.id);
         if (!schedule) return res.status(404).json({ message: 'Schedule not found' });
         res.json(schedule);
     } catch (err) {
