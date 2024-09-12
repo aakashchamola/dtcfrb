@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { 
+  buttonStyle, 
+  inputStyle, 
+  selectStyle, 
+  detailsContainerStyle, 
+  detailsStyle, 
+  navButtonContainerStyle, 
+  navButtonStyle, 
+  centeredContainerStyle, 
+  searchContainerStyle 
+} from './ui/style';
 
 const RoutesList = () => {
   const [routes, setRoutes] = useState([]);
@@ -41,25 +52,31 @@ const RoutesList = () => {
   });
 
   return (
-    <div>
+    <div style={centeredContainerStyle}>
       <h2>Route Management</h2>
-      <button onClick={handleShowAll}>Show All Routes</button>
-      <Link to="/add-route">
-        <button>Add Route</button>
-      </Link>
+      <div style={{ marginBottom: '20px' }}>
+        <button onClick={handleShowAll} style={buttonStyle}>Show All Routes</button>
+        <Link to="/add-route">
+          <button style={{ ...buttonStyle, marginLeft: '10px' }}>Add Route</button>
+        </Link>
+      </div>
 
       {showAll && (
-        <div>
-          <div style={{ margin: '20px 0' }}>
+        <div style={{ width: '100%', maxWidth: '800px' }}>
+          <div style={searchContainerStyle}>
             <input
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ marginRight: '10px', padding: '5px' }}
+              style={inputStyle}
             />
 
-            <select value={filterProperty} onChange={(e) => setFilterProperty(e.target.value)} style={{ padding: '5px' }}>
+            <select
+              value={filterProperty}
+              onChange={(e) => setFilterProperty(e.target.value)}
+              style={{ ...selectStyle, marginLeft: '10px' }}
+            >
               <option value="routeNumber">Route Number</option>
               <option value="totalDistance">Total Distance</option>
               <option value="congestionStatus">Congestion Status</option>
@@ -67,24 +84,22 @@ const RoutesList = () => {
           </div>
 
           {filteredRoutes.length > 0 ? (
-            <div>
-              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
+            <div style={detailsContainerStyle}>
+              <div style={detailsStyle}>
                 <p><strong>Route Number:</strong> {filteredRoutes[currentIndex].routeNumber}</p>
                 <p><strong>Total Distance:</strong> {filteredRoutes[currentIndex].totalDistance}</p>
                 <p><strong>Total Time:</strong> {filteredRoutes[currentIndex].totalTime}</p>
                 <p><strong>Congestion Status:</strong> {filteredRoutes[currentIndex].congestionStatus}</p>
               </div>
 
-              {filteredRoutes.length > 1 && currentIndex > 0 && (
-                <div style={{ textAlign: 'left' }}>
-                  <button onClick={handlePrevious}>Previous</button>
-                </div>
-              )}
-              {filteredRoutes.length > 1 && currentIndex < filteredRoutes.length - 1 && (
-                <div style={{ textAlign: 'right' }}>
-                  <button onClick={handleNext}>Next</button>
-                </div>
-              )}
+              <div style={navButtonContainerStyle}>
+                <button onClick={handlePrevious} disabled={currentIndex === 0} style={navButtonStyle}>
+                  Previous
+                </button>
+                <button onClick={handleNext} disabled={currentIndex === filteredRoutes.length - 1} style={navButtonStyle}>
+                  Next
+                </button>
+              </div>
             </div>
           ) : (
             <p>No routes available</p>

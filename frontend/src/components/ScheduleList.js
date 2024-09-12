@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { 
+  buttonStyle, 
+  inputStyle, 
+  selectStyle, 
+  detailsContainerStyle, 
+  detailsStyle, 
+  navButtonContainerStyle, 
+  navButtonStyle, 
+  centeredContainerStyle, 
+  searchContainerStyle 
+} from './ui/style';
 
 const SchedulesList = () => {
   const [schedules, setSchedules] = useState([]);
@@ -41,25 +52,31 @@ const SchedulesList = () => {
   });
 
   return (
-    <div>
+    <div style={centeredContainerStyle}>
       <h2>Schedule Management</h2>
-      <button onClick={handleShowAll}>Show All Schedules</button>
-      <Link to="/add-schedule">
-        <button>Add Schedule</button>
-      </Link>
+      <div style={{ marginBottom: '20px' }}>
+        <button onClick={handleShowAll} style={buttonStyle}>Show All Schedules</button>
+        <Link to="/add-schedule">
+          <button style={{ ...buttonStyle, marginLeft: '10px' }}>Add Schedule</button>
+        </Link>
+      </div>
 
       {showAll && (
-        <div>
-          <div style={{ margin: '20px 0' }}>
+        <div style={{ width: '100%', maxWidth: '800px' }}>
+          <div style={searchContainerStyle}>
             <input
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ marginRight: '10px', padding: '5px' }}
+              style={inputStyle}
             />
 
-            <select value={filterProperty} onChange={(e) => setFilterProperty(e.target.value)} style={{ padding: '5px' }}>
+            <select
+              value={filterProperty}
+              onChange={(e) => setFilterProperty(e.target.value)}
+              style={{ ...selectStyle, marginLeft: '10px' }}
+            >
               <option value="status">Status</option>
               <option value="scheduleType">Schedule Type</option>
               <option value="shiftStartTime">Shift Start Time</option>
@@ -67,8 +84,8 @@ const SchedulesList = () => {
           </div>
 
           {filteredSchedules.length > 0 ? (
-            <div>
-              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
+            <div style={detailsContainerStyle}>
+              <div style={detailsStyle}>
                 <p><strong>Bus ID:</strong> {filteredSchedules[currentIndex].busId}</p>
                 <p><strong>Crew ID:</strong> {filteredSchedules[currentIndex].crewId}</p>
                 <p><strong>Route ID:</strong> {filteredSchedules[currentIndex].routeId}</p>
@@ -77,16 +94,14 @@ const SchedulesList = () => {
                 <p><strong>Status:</strong> {filteredSchedules[currentIndex].status}</p>
               </div>
 
-              {filteredSchedules.length > 1 && currentIndex > 0 && (
-                <div style={{ textAlign: 'left' }}>
-                  <button onClick={handlePrevious}>Previous</button>
-                </div>
-              )}
-              {filteredSchedules.length > 1 && currentIndex < filteredSchedules.length - 1 && (
-                <div style={{ textAlign: 'right' }}>
-                  <button onClick={handleNext}>Next</button>
-                </div>
-              )}
+              <div style={navButtonContainerStyle}>
+                <button onClick={handlePrevious} disabled={currentIndex === 0} style={navButtonStyle}>
+                  Previous
+                </button>
+                <button onClick={handleNext} disabled={currentIndex === filteredSchedules.length - 1} style={navButtonStyle}>
+                  Next
+                </button>
+              </div>
             </div>
           ) : (
             <p>No schedules available</p>
@@ -97,4 +112,4 @@ const SchedulesList = () => {
   );
 };
 
-export default SchedulesList
+export default SchedulesList;

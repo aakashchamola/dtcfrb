@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import {
+  buttonStyle,
+  inputStyle,
+  selectStyle,
+  detailsContainerStyle,
+  detailsStyle,
+  navButtonContainerStyle,
+  navButtonStyle,
+  centeredContainerStyle,
+  searchContainerStyle,
+} from './ui/style'; // Ensure your styles are defined
 
 const CrewList = () => {
   const [crews, setCrews] = useState([]);
@@ -8,6 +19,7 @@ const CrewList = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterProperty, setFilterProperty] = useState('name');
+  const navigate = useNavigate(); // Initialize the navigate hook
 
   const fetchCrews = async () => {
     try {
@@ -40,25 +52,38 @@ const CrewList = () => {
     return propertyValue?.startsWith(searchTerm.toLowerCase());
   });
 
+  const handleEdit = () => {
+    const crewId = filteredCrews[currentIndex]?._id;
+    if (crewId) {
+      navigate(`/edit-crew/${crewId}`);
+    }
+  };
+
   return (
-    <div>
+    <div style={centeredContainerStyle}>
       <h2>Crew Management</h2>
-      <button onClick={handleShowAll}>Show All Crews</button>
-      <Link to="/add-crew">
-        <button>Add Crew</button>
-      </Link>
+      <div style={{ marginBottom: '20px' }}>
+        <button onClick={handleShowAll} style={buttonStyle}>Show All Crews</button>
+        <Link to="/add-crew">
+          <button style={{ ...buttonStyle, marginLeft: '10px' }}>Add Crew</button>
+        </Link>
+      </div>
 
       {showAll && (
-        <div>
-          <div style={{ margin: '20px 0' }}>
+        <div style={{ width: '100%', maxWidth: '800px' }}>
+          <div style={searchContainerStyle}>
             <input
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ marginRight: '10px', padding: '5px' }}
+              style={inputStyle}
             />
-            <select value={filterProperty} onChange={(e) => setFilterProperty(e.target.value)} style={{ padding: '5px' }}>
+            <select
+              value={filterProperty}
+              onChange={(e) => setFilterProperty(e.target.value)}
+              style={{ ...selectStyle, marginLeft: '10px' }}
+            >
               <option value="name">Name</option>
               <option value="role">Role</option>
               <option value="licenseNumber">License Number</option>
@@ -66,24 +91,23 @@ const CrewList = () => {
           </div>
 
           {filteredCrews.length > 0 ? (
-            <div>
-              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
-                <p><strong>Name:</strong> {filteredCrews[currentIndex].name}</p>
-                <p><strong>Role:</strong> {filteredCrews[currentIndex].role}</p>
-                <p><strong>License Number:</strong> {filteredCrews[currentIndex].licenseNumber ?? 'NA'}</p>
-                <p><strong>Availability Status:</strong> {filteredCrews[currentIndex].availabilityStatus}</p>
+            <div style={detailsContainerStyle}>
+              <div style={detailsStyle}>
+                <p><strong>Name:</strong> {filteredCrews[currentIndex]?.name}</p>
+                <p><strong>Role:</strong> {filteredCrews[currentIndex]?.role}</p>
+                <p><strong>License Number:</strong> {filteredCrews[currentIndex]?.licenseNumber ?? 'NA'}</p>
+                <p><strong>Availability Status:</strong> {filteredCrews[currentIndex]?.availabilityStatus}</p>
               </div>
 
-              {filteredCrews.length > 1 && currentIndex > 0 && (
-                <div style={{ textAlign: 'left' }}>
-                  <button onClick={handlePrevious}>Previous</button>
-                </div>
-              )}
-              {filteredCrews.length > 1 && currentIndex < filteredCrews.length - 1 && (
-                <div style={{ textAlign: 'right' }}>
-                  <button onClick={handleNext}>Next</button>
-                </div>
-              )}
+              <div style={navButtonContainerStyle}>
+                <button onClick={handlePrevious} disabled={currentIndex === 0} style={navButtonStyle}>
+                  Previous
+                </button>
+                <button onClick={handleEdit} style={navButtonStyle}>Edit</button>
+                <button onClick={handleNext} disabled={currentIndex === filteredCrews.length - 1} style={navButtonStyle}>
+                  Next
+                </button>
+              </div>
             </div>
           ) : (
             <p>No crews available</p>

@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Use `useNavigate` hook
+import {
+  buttonStyle,
+  inputStyle,
+  selectStyle,
+  detailsContainerStyle,
+  detailsStyle,
+  navButtonContainerStyle,
+  navButtonStyle,
+  centeredContainerStyle,
+  searchContainerStyle,
+} from './ui/style';
 
 const BusStopList = () => {
   const [busStops, setBusStops] = useState([]);
@@ -8,6 +19,7 @@ const BusStopList = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterProperty, setFilterProperty] = useState('stopName');
+  const navigate = useNavigate(); // Initialize the navigate hook
 
   const fetchBusStops = async () => {
     try {
@@ -40,49 +52,59 @@ const BusStopList = () => {
     return propertyValue?.startsWith(searchTerm.toLowerCase());
   });
 
+  const handleEdit = () => {
+    const busStopId = filteredBusStops[currentIndex]._id;
+    navigate(`/edit-busstop/${busStopId}`); // Use navigate for redirection
+  };
+
   return (
-    <div>
+    <div style={centeredContainerStyle}>
       <h2>Bus Stop Management</h2>
-      <button onClick={handleShowAll}>Show All Bus Stops</button>
-      <Link to="/add-stop">
-        <button>Add Bus Stop</button>
-      </Link>
+      <div style={{ marginBottom: '20px' }}>
+        <button onClick={handleShowAll} style={buttonStyle}>Show All Bus Stops</button>
+        <Link to="/add-stop">
+          <button style={{ ...buttonStyle, marginLeft: '10px' }}>Add Bus Stop</button>
+        </Link>
+      </div>
 
       {showAll && (
-        <div>
-          <div style={{ margin: '20px 0' }}>
+        <div style={{ width: '100%', maxWidth: '800px' }}>
+          <div style={searchContainerStyle}>
             <input
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ marginRight: '10px', padding: '5px' }}
+              style={inputStyle}
             />
-            <select value={filterProperty} onChange={(e) => setFilterProperty(e.target.value)} style={{ padding: '5px' }}>
+            <select
+              value={filterProperty}
+              onChange={(e) => setFilterProperty(e.target.value)}
+              style={{ ...selectStyle, marginLeft: '10px' }}
+            >
               <option value="stopName">Stop Name</option>
               <option value="city">City</option>
             </select>
           </div>
 
           {filteredBusStops.length > 0 ? (
-            <div>
-              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
+            <div style={detailsContainerStyle}>
+              <div style={detailsStyle}>
                 <p><strong>Stop Name:</strong> {filteredBusStops[currentIndex].stopName}</p>
                 <p><strong>City:</strong> {filteredBusStops[currentIndex].city}</p>
                 <p><strong>Latitude:</strong> {filteredBusStops[currentIndex].location.latitude}</p>
                 <p><strong>Longitude:</strong> {filteredBusStops[currentIndex].location.longitude}</p>
               </div>
 
-              {filteredBusStops.length > 1 && currentIndex > 0 && (
-                <div style={{ textAlign: 'left' }}>
-                  <button onClick={handlePrevious}>Previous</button>
-                </div>
-              )}
-              {filteredBusStops.length > 1 && currentIndex < filteredBusStops.length - 1 && (
-                <div style={{ textAlign: 'right' }}>
-                  <button onClick={handleNext}>Next</button>
-                </div>
-              )}
+              <div style={navButtonContainerStyle}>
+                <button onClick={handlePrevious} disabled={currentIndex === 0} style={navButtonStyle}>
+                  Previous
+                </button>
+                <button onClick={handleEdit} style={navButtonStyle}>Edit</button>
+                <button onClick={handleNext} disabled={currentIndex === filteredBusStops.length - 1} style={navButtonStyle}>
+                  Next
+                </button>
+              </div>
             </div>
           ) : (
             <p>No bus stops available</p>
