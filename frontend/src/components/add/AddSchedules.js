@@ -1,29 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-  buttonStyle, inputStyle, selectStyle, labelStyle, formContainerStyle
-} from '../ui/Style'; // Ensure these styles are defined in your styles file
+  buttonStyle, inputStyle, selectStyle, labelStyle, formContainerStyle, detailsContainerStyle
+} from '../ui/Style'; // Ensure 'detailsContainerStyle' is defined in your styles file
 
 const AddSchedule = () => {
+  const [buses, setBuses] = useState([]);
+  const [crews, setCrews] = useState([]);
+  const [routes, setRoutes] = useState([]);
+  const [stops, setStops] = useState([]);
+
   const [busId, setBusId] = useState('');
-  const [crewId, setCrewId] = useState([]); // Changed to an array
+  const [crewId, setCrewId] = useState('');
   const [routeId, setRouteId] = useState('');
   const [shiftStartTime, setShiftStartTime] = useState('');
   const [shiftEndTime, setShiftEndTime] = useState('');
   const [scheduleType, setScheduleType] = useState('Linked');
   const [handoverBusId, setHandoverBusId] = useState('');
   const [status, setStatus] = useState('scheduled');
-  const [newCrewId, setNewCrewId] = useState(''); // For adding new crew IDs
+
+  // Fetch data for buses, crews, and routes at the start
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [busResponse, crewResponse, routeResponse] = await Promise.all([
+          axios.get('http://localhost:5001/api/bus'),
+          axios.get('http://localhost:5001/api/crew'),
+          axios.get('http://localhost:5001/api/route')
+        ]);
+
+        setBuses(busResponse.data);
+        setCrews(crewResponse.data);
+        setRoutes(routeResponse.data);
+      } catch (error) {
+        toast.error('Error fetching data');
+        console.error('Error fetching data', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // When a route is selected, fetch its stops
+  useEffect(() => {
+    const selectedRoute = routes.find(route => route._id === routeId);
+    if (selectedRoute) {
+      setStops(selectedRoute.stops);
+    } else {
+      setStops([]);
+    }
+  }, [routeId, routes]);
 
   const validateForm = () => {
     if (!busId) {
       toast.error('Bus ID is required');
       return false;
     }
-    if (crewId.length === 0) {
-      toast.error('At least one Crew ID is required');
+    if (!crewId) {
+      toast.error('Crew ID is required');
       return false;
     }
     if (!routeId) {
@@ -41,17 +77,6 @@ const AddSchedule = () => {
     return true;
   };
 
-  const handleAddCrewId = () => {
-    if (newCrewId.trim()) {
-      setCrewId([...crewId, newCrewId.trim()]);
-      setNewCrewId('');
-    }
-  };
-
-  const handleRemoveCrewId = (index) => {
-    setCrewId(crewId.filter((_, i) => i !== index));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
@@ -59,12 +84,12 @@ const AddSchedule = () => {
     try {
       const newSchedule = {
         busId,
-        crewId, // This is now an array
+        crewId,
         routeId,
         shiftStartTime: new Date(shiftStartTime),
         shiftEndTime: new Date(shiftEndTime),
         scheduleType,
-        handoverBusId: handoverBusId || null, // Optional handoverBusId
+        handoverBusId: handoverBusId || null,
         status
       };
 
@@ -73,7 +98,7 @@ const AddSchedule = () => {
 
       // Reset form after submission
       setBusId('');
-      setCrewId([]);
+      setCrewId('');
       setRouteId('');
       setShiftStartTime('');
       setShiftEndTime('');
@@ -86,59 +111,98 @@ const AddSchedule = () => {
     }
   };
 
+  // Get selected bus details
+  const selectedBus = buses.find(bus => bus._id === busId);
+
+  // Get selected crew details
+  const selectedCrew = crews.find(crew => crew._id === crewId);
+
   return (
     <div style={formContainerStyle}>
       <h2>Add Schedule</h2>
       <form onSubmit={handleSubmit}>
+
+        {/* Bus Dropdown */}
         <div style={{ marginBottom: '15px' }}>
-          <label style={labelStyle}>Bus ID</label>
-          <input
-            type="text"
+          <label style={labelStyle}>Bus</label>
+          <select
             value={busId}
             onChange={(e) => setBusId(e.target.value)}
-            style={inputStyle}
+            style={selectStyle}
             required
-          />
-        </div>
-
-        {/* Updated Crew ID Section */}
-        <div style={{ marginBottom: '15px' }}>
-          <label style={labelStyle}>Crew ID</label>
-          <div>
-            <input
-              type="text"
-              value={newCrewId}
-              onChange={(e) => setNewCrewId(e.target.value)}
-              style={inputStyle}
-              placeholder="Enter Crew ID"
-            />
-            <button type="button" onClick={handleAddCrewId} style={buttonStyle}>
-              Add Crew
-            </button>
-          </div>
-          <ul>
-            {crewId.map((id, index) => (
-              <li key={index}>
-                {id}
-                <button type="button" onClick={() => handleRemoveCrewId(index)}>
-                  Remove
-                </button>
-              </li>
+          >
+            <option value="" disabled>Select a bus</option>
+            {buses.map(bus => (
+              <option key={bus._id} value={bus._id}>{bus.busNumber}</option>
             ))}
-          </ul>
+          </select>
+
+          {/* Bus details */}
+          {selectedBus && (
+            <div style={{ marginLeft: '20px', marginTop: '10px', ...detailsContainerStyle }}>
+              <p>Bus Type: {selectedBus.busType}</p>
+              <p>Capacity: {selectedBus.capacity}</p>
+              <p>Status: {selectedBus.status}</p>
+            </div>
+          )}
         </div>
 
+        {/* Crew Dropdown */}
         <div style={{ marginBottom: '15px' }}>
-          <label style={labelStyle}>Route ID</label>
-          <input
-            type="text"
+          <label style={labelStyle}>Crew</label>
+          <select
+            value={crewId}
+            onChange={(e) => setCrewId(e.target.value)}
+            style={selectStyle}
+            required
+          >
+            <option value="" disabled>Select a crew</option>
+            {crews.map(crew => (
+              <option key={crew._id} value={crew._id}>{crew.name}</option>
+            ))}
+          </select>
+
+          {/* Crew details */}
+          {selectedCrew && (
+            <div style={{ marginLeft: '20px', marginTop: '10px', ...detailsContainerStyle }}>
+              <p>Role: {selectedCrew.role}</p>
+              <p>Availability Status: {selectedCrew.availabilityStatus}</p>
+              {selectedCrew.shiftDetails && (
+                <p>Shift: {new Date(selectedCrew.shiftDetails.startTime).toLocaleTimeString()} - {new Date(selectedCrew.shiftDetails.endTime).toLocaleTimeString()}</p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Route Dropdown */}
+        <div style={{ marginBottom: '15px' }}>
+          <label style={labelStyle}>Route</label>
+          <select
             value={routeId}
             onChange={(e) => setRouteId(e.target.value)}
-            style={inputStyle}
+            style={selectStyle}
             required
-          />
+          >
+            <option value="" disabled>Select a route</option>
+            {routes.map(route => (
+              <option key={route._id} value={route._id}>{route.routeNumber}</option>
+            ))}
+          </select>
         </div>
 
+        {/* Stops List (displayed based on selected route) */}
+        {stops.length > 0 && (
+          <div style={{ marginBottom: '15px' }}>
+            <label style={labelStyle}>Stops</label>
+            <ul style={{ marginLeft: '20px' }}>
+              {stops.map((stop, index) => (
+                <li key={index}>{stop.busStopName}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Shift Start Time */}
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Shift Start Time</label>
           <input
@@ -150,6 +214,7 @@ const AddSchedule = () => {
           />
         </div>
 
+        {/* Shift End Time */}
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Shift End Time</label>
           <input
@@ -161,6 +226,7 @@ const AddSchedule = () => {
           />
         </div>
 
+        {/* Schedule Type */}
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Schedule Type</label>
           <select
@@ -173,6 +239,7 @@ const AddSchedule = () => {
           </select>
         </div>
 
+        {/* Handover Bus ID */}
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Handover Bus ID (Optional)</label>
           <input
@@ -183,6 +250,7 @@ const AddSchedule = () => {
           />
         </div>
 
+        {/* Status */}
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Status</label>
           <select
@@ -196,9 +264,7 @@ const AddSchedule = () => {
           </select>
         </div>
 
-        <button type="submit" style={buttonStyle}>
-          Add Schedule
-        </button>
+        <button type="submit" style={buttonStyle}>Add Schedule</button>
       </form>
       <ToastContainer />
     </div>
