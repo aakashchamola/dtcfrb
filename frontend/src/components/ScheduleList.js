@@ -6,7 +6,7 @@ import {
   inputStyle, 
   selectStyle, 
   detailsContainerStyle, 
-  detailsStyle, 
+  // detailsContainerStyle, 
   navButtonContainerStyle, 
   navButtonStyle, 
   centeredContainerStyle, 
@@ -89,7 +89,7 @@ const SchedulesList = () => {
 
           {filteredSchedules.length > 0 ? (
             <div style={detailsContainerStyle}>
-              <div style={detailsStyle}>
+              <div style={detailsContainerStyle}>
                 <p><strong>Bus ID:</strong> {filteredSchedules[currentIndex].busId}</p>
                 <p><strong>Assigned CrewId:</strong> 
   {filteredSchedules[currentIndex].crewId && filteredSchedules[currentIndex].crewId.length > 0

@@ -6,7 +6,7 @@ import {
   inputStyle, 
   selectStyle, 
   detailsContainerStyle, 
-  detailsStyle, 
+  // detailsContainerStyle, 
   navButtonContainerStyle, 
   navButtonStyle, 
   centeredContainerStyle, 
@@ -93,7 +93,7 @@ const RoutesList = () => {
 
           {filteredRoutes.length > 0 ? (
             <div style={detailsContainerStyle}>
-              <div style={detailsStyle}>
+              <div style={detailsContainerStyle}>
                 <p><strong>Route Number:</strong> {filteredRoutes[currentIndex].routeNumber}</p>
                                 {/* Display Stops */}
                                 <h3>Stops</h3>

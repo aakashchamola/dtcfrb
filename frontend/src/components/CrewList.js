@@ -6,7 +6,7 @@ import {
   inputStyle,
   selectStyle,
   detailsContainerStyle,
-  detailsStyle,
+  // detailsContainerStyle,
   navButtonContainerStyle,
   navButtonStyle,
   centeredContainerStyle,
@@ -92,7 +92,7 @@ const CrewList = () => {
 
           {filteredCrews.length > 0 ? (
             <div style={detailsContainerStyle}>
-              <div style={detailsStyle}>
+              <div style={detailsContainerStyle}>
                 <p><strong>Name:</strong> {filteredCrews[currentIndex]?.name}</p>
                 <p><strong>Role:</strong> {filteredCrews[currentIndex]?.role}</p>
                 <p><strong>License Number:</strong> {filteredCrews[currentIndex]?.licenseNumber ?? 'NA'}</p>

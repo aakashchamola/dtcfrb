@@ -6,7 +6,7 @@ import {
   inputStyle, 
   selectStyle, 
   detailsContainerStyle, 
-  detailsStyle, 
+  // detailsContainerStyle, 
   navButtonContainerStyle, 
   navButtonStyle, 
   centeredContainerStyle,
@@ -101,7 +101,7 @@ const BusList = () => {
 
           {filteredBuses.length > 0 ? (
             <div style={detailsContainerStyle}>
-              <div style={detailsStyle}>
+              <div style={detailsContainerStyle}>
                 <p><strong>Bus Number:</strong> {filteredBuses[currentIndex].busNumber}</p>
                 <p><strong>Bus Type:</strong> {filteredBuses[currentIndex].busType}</p>
                 <p><strong>Capacity:</strong> {filteredBuses[currentIndex].capacity}</p>

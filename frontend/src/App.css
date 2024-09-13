@@ -1,17 +1,24 @@
+/* app.css */
 .app-container {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif; /* Change font for modern look */
   margin: 0;
   padding: 0;
+  background-color: #f0f2f5; /* Light background for contrast */
 }
 
 .header {
   text-align: center;
-  color: #333;
+  color: #007bff;
   background-color: #f4f4f4;
-  padding: 20px;
+  padding: 40px; /* Increase padding for more prominence */
+  font-size: 2rem; /* Increase font size */
   margin: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add shadow for effect */
 }
 
 .welcome {
   text-align: center;
+  font-size: 1.5rem;
+  padding: 20px;
+  color: #333;
 }

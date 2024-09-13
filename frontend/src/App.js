@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css'; // Import the CSS file
+import './App.css'; // Import the updated CSS
 import BusList from './components/BusList';
 import AddBus from './components/add/AddBus';
 import CrewList from './components/CrewList';
@@ -22,8 +22,11 @@ function App() {
   return (
     <Router>
       <div className="app-container">
-        <header className="header">DTC Bus Management System</header>
-        <Navbar />
+        <div className="header-container">
+          <h1 className="header">DTC Bus Management System</h1>
+          <p className="subheading">Efficient scheduling and management at your fingertips</p>
+          <Navbar />
+        </div>
         <Routes>
           <Route path="/" element={<h2 className="welcome">Welcome to the DTC Bus Management System</h2>} />
           {/* Main list components path */}
