@@ -22,17 +22,40 @@ const EditRoute = () => {
     activeBuses: [],
   });
 
+  const [allStops, setAllStops] = useState([]);
+
   useEffect(() => {
+    // Fetch route data
     const fetchRouteData = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/api/route/${id}`);
-        setRouteData(response.data);
+        // Ensure date-time fields are in the correct format
+        const formattedData = {
+          ...response.data,
+          stops: response.data.stops.map(stop => ({
+            ...stop,
+            arrivalTime: stop.arrivalTime ? new Date(stop.arrivalTime).toISOString().slice(0, 16) : '',
+            departureTime: stop.departureTime ? new Date(stop.departureTime).toISOString().slice(0, 16) : '',
+          })),
+        };
+        setRouteData(formattedData);
       } catch (error) {
         console.error('Error fetching route data', error);
       }
     };
 
+    // Fetch all stops for dropdown
+    const fetchStops = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/api/busstop');
+        setAllStops(response.data);
+      } catch (error) {
+        console.error('Error fetching stops', error);
+      }
+    };
+
     fetchRouteData();
+    fetchStops();
   }, [id]);
 
   const handleInputChange = (e) => {
@@ -70,7 +93,16 @@ const EditRoute = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5001/api/route/${id}`, routeData);
+      // Convert date-time fields to ISO string format before sending
+      const formattedData = {
+        ...routeData,
+        stops: routeData.stops.map(stop => ({
+          ...stop,
+          arrivalTime: stop.arrivalTime ? new Date(stop.arrivalTime).toISOString() : '',
+          departureTime: stop.departureTime ? new Date(stop.departureTime).toISOString() : '',
+        })),
+      };
+      await axios.put(`http://localhost:5001/api/route/${id}`, formattedData);
       navigate('/routes'); // Redirect to the routes list
     } catch (error) {
       console.error('Error updating route', error);
@@ -108,14 +140,20 @@ const EditRoute = () => {
         {routeData.stops.map((stop, index) => (
           <div key={index} style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ccc' }}>
             <div style={{ marginBottom: '10px' }}>
-              <label style={labelStyle}>Bus Stop ID</label>
-              <input
-                type="text"
+              <label style={labelStyle}>Bus Stop</label>
+              <select
                 value={stop.busStopId}
                 onChange={(e) => handleStopChange(index, 'busStopId', e.target.value)}
-                style={inputStyle}
+                style={selectStyle}
                 required
-              />
+              >
+                <option value="">Select a Stop</option>
+                {allStops.map(stopOption => (
+                  <option key={stopOption._id} value={stopOption._id}>
+                    {stopOption.stopName}
+                  </option>
+                ))}
+              </select>
             </div>
             <div style={{ marginBottom: '10px' }}>
               <label style={labelStyle}>Order</label>
@@ -179,31 +217,30 @@ const EditRoute = () => {
         </div>
 
         <div style={{ marginBottom: '15px' }}>
-  <label style={labelStyle}>Congestion Status</label>
-  <select
-    name="congestionStatus"
-    value={routeData.congestionStatus}
-    onChange={handleInputChange}
-    style={selectStyle}
-  >
-    <option value="NA">Select</option>
-    <option value="Clear">Clear</option>
-    <option value="Moderate">Moderate</option>
-    <option value="Congested">Congested</option>
-  </select>
-</div>
+          <label style={labelStyle}>Congestion Status</label>
+          <select
+            name="congestionStatus"
+            value={routeData.congestionStatus}
+            onChange={handleInputChange}
+            style={selectStyle}
+          >
+            <option value="NA">Select</option>
+            <option value="clear">Clear</option>
+            <option value="moderate">Moderate</option>
+            <option value="congested">Congested</option>
+          </select>
+        </div>
 
-
-        <div style={{ marginBottom: '15px' }}>
+        {/* <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Active Buses (comma-separated Bus IDs)</label>
           <input
             type="text"
             name="activeBuses"
             value={routeData.activeBuses.join(', ')}
-            onChange={(e) => handleInputChange({ target: { name: 'activeBuses', value: e.target.value.split(',') } })}
+            onChange={(e) => handleInputChange({ target: { name: 'activeBuses', value: e.target.value.split(',').map(bus => bus.trim()) } })}
             style={inputStyle}
           />
-        </div>
+        </div> */}
 
         <button type="submit" style={buttonStyle}>
           Update Route

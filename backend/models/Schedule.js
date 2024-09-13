@@ -8,7 +8,8 @@ const ScheduleSchema = new mongoose.Schema({
   shiftEndTime: { type: Date, required: true },
   scheduleType: { type: String, enum: ['Linked', 'Unlinked'], required: true },
   handoverBusId: { type: mongoose.Schema.Types.ObjectId, ref: 'Bus', default: null },
-  status: { type: String, default: 'scheduled' }
+  status: { type: String,enum: ['scheduled', 'completed','cancelled'], default: 'scheduled' }
 });
 
 module.exports = mongoose.model('Schedule', ScheduleSchema);
+ 

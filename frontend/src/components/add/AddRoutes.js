@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { buttonStyle, inputStyle, formContainerStyle, labelStyle,selectStyle} from '../ui/Style';
+import { buttonStyle, inputStyle, formContainerStyle, labelStyle, selectStyle } from '../ui/Style';
 
 const AddRoute = () => {
   const [routeNumber, setRouteNumber] = useState('');
-  const [stops, setStops] = useState([{ busStopId: '', order: '', arrivalTime: '', departureTime: '' }]);
+  const [stops, setStops] = useState([{ busStopId: '',busStopName: '', order: '', arrivalTime: '', departureTime: '' }]);
   const [totalDistance, setTotalDistance] = useState('');
   const [totalTime, setTotalTime] = useState('');
-  const [congestionStatus, setCongestionStatus] = useState('');
+  const [congestionStatus, setCongestionStatus] = useState('NA');
   const [activeBuses, setActiveBuses] = useState(['']);
+  const [allStops, setAllStops] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchStops = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/api/busstop');
+        setAllStops(response.data);
+      } catch (error) {
+        console.error('Error fetching stops', error);
+        toast.error('Error fetching stops');
+      }
+    };
+
+    fetchStops();
+  }, []);
 
   const validateForm = () => {
     if (!routeNumber) {
@@ -21,12 +37,12 @@ const AddRoute = () => {
       toast.error('All stops must have a Bus Stop ID and Order');
       return false;
     }
-    if (!totalDistance) {
-      toast.error('Total Distance is required');
+    if (!totalDistance || totalDistance <= 0) {
+      toast.error('Total Distance must be a positive number');
       return false;
     }
-    if (!totalTime) {
-      toast.error('Total Time is required');
+    if (!totalTime || totalTime <= 0) {
+      toast.error('Total Time must be a positive number');
       return false;
     }
     return true;
@@ -34,12 +50,17 @@ const AddRoute = () => {
 
   const handleStopChange = (index, field, value) => {
     const updatedStops = [...stops];
+    if (field === 'busStopId') {
+      const selectedStop = allStops.find(stop => stop._id === value);
+      updatedStops[index].busStopName = selectedStop ? selectedStop.stopName : '';
+    }
     updatedStops[index][field] = value;
     setStops(updatedStops);
   };
+  
 
   const addStop = () => {
-    setStops([...stops, { busStopId: '', order: '', arrivalTime: '', departureTime: '' }]);
+    setStops([...stops, { busStopId: '',busStopName: '', order: '', arrivalTime: '', departureTime: '' }]);
   };
 
   const removeStop = (index) => {
@@ -50,28 +71,42 @@ const AddRoute = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+  
+    setLoading(true);
+  
+    const cleanedActiveBuses = activeBuses.filter(bus => bus.trim() !== '');
+  
+    // Map busStopId to busStopName in stops array
+    const stopsWithNames = stops.map(stop => ({
+      ...stop,
+      busStopName: allStops.find(s => s._id === stop.busStopId)?.stopName || ''
+    }));
+  
     try {
       await axios.post('http://localhost:5001/api/route', {
         routeNumber,
-        stops,
+        stops: stopsWithNames, // Use the stopsWithNames array here
         totalDistance,
         totalTime,
         congestionStatus,
-        activeBuses
+        activeBuses: cleanedActiveBuses
       });
       toast.success('Route added successfully');
+      // Reset form
       setRouteNumber('');
-      setStops([{ busStopId: '', order: '', arrivalTime: '', departureTime: '' }]);
+      setStops([{ busStopId: '', busStopName: '', order: '', arrivalTime: '', departureTime: '' }]);
       setTotalDistance('');
       setTotalTime('');
-      setCongestionStatus('');
+      setCongestionStatus('NA');
       setActiveBuses(['']);
     } catch (error) {
       console.error('Error adding route', error);
       toast.error('Error adding route');
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <div style={formContainerStyle}>
@@ -92,19 +127,26 @@ const AddRoute = () => {
         {stops.map((stop, index) => (
           <div key={index} style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ccc' }}>
             <div style={{ marginBottom: '10px' }}>
-              <label style={labelStyle}>Bus Stop ID</label>
-              <input
-                type="text"
+              <label style={labelStyle}>Bus Stop</label>
+              <select
                 value={stop.busStopId}
                 onChange={(e) => handleStopChange(index, 'busStopId', e.target.value)}
-                style={inputStyle}
+                style={selectStyle}
                 required
-              />
+              >
+                <option value="">Select a Stop</option>
+                {allStops.map(stopOption => (
+                  <option key={stopOption._id} value={stopOption._id}>
+                    {stopOption.stopName}
+                  </option>
+                ))}
+              </select>
             </div>
             <div style={{ marginBottom: '10px' }}>
               <label style={labelStyle}>Order</label>
               <input
                 type="number"
+                min="1"
                 value={stop.order}
                 onChange={(e) => handleStopChange(index, 'order', e.target.value)}
                 style={inputStyle}
@@ -146,6 +188,7 @@ const AddRoute = () => {
             onChange={(e) => setTotalDistance(e.target.value)}
             style={inputStyle}
             required
+            min="0"
           />
         </div>
 
@@ -157,8 +200,10 @@ const AddRoute = () => {
             onChange={(e) => setTotalTime(e.target.value)}
             style={inputStyle}
             required
+            min="0"
           />
         </div>
+
         <div style={{ marginBottom: '15px' }}>
           <label style={labelStyle}>Congestion Status</label>
           <select
@@ -166,10 +211,10 @@ const AddRoute = () => {
             onChange={(e) => setCongestionStatus(e.target.value)}
             style={selectStyle}
           >
-            <option value="NA">Select</option>
-            <option value="Clear">Clear</option>
-            <option value="Moderate">Moderate</option>
-            <option value="Congested">Congested</option>
+            <option value='NA'>Select</option>
+            <option value="clear">Clear</option>
+            <option value="moderate">Moderate</option>
+            <option value="congested">Congested</option>
           </select>
         </div>
 
@@ -183,8 +228,8 @@ const AddRoute = () => {
           />
         </div>
 
-        <button type="submit" style={buttonStyle}>
-          Add Route
+        <button type="submit" style={buttonStyle} disabled={loading}>
+          {loading ? 'Adding Route...' : 'Add Route'}
         </button>
       </form>
       <ToastContainer />

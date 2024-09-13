@@ -4,7 +4,7 @@ const busController = require('../controllers/busController');
 
 router.get('/', busController.getAllBuses);
 router.get('/:id', busController.getBusById);
-router.post('/', busController.addBus);
+router.post('/', busController.createBus);
 router.put('/:id', busController.updateBus);
 router.delete('/:id', busController.deleteBus);
 

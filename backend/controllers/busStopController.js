@@ -1,6 +1,5 @@
-const BusStop = require('../models/BusStop');
+const BusStop = require('../models/BusStop'); // Adjust the path as needed
 
-// Get all bus stops
 exports.getAllBusStops = async (req, res) => {
     try {
         const busStops = await BusStop.find();
@@ -10,46 +9,48 @@ exports.getAllBusStops = async (req, res) => {
     }
 };
 
-// Get bus stop by ID
+exports.addBusStop = async (req, res) => {
+    try {
+        const busStop = new BusStop(req.body);
+        await busStop.save();
+        res.status(201).json(busStop);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+exports.updateBusStop = async (req, res) => {
+    try {
+        const busStop = await BusStop.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!busStop) {
+            return res.status(404).json({ error: 'Bus Stop not found' });
+        }
+        res.json(busStop);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 exports.getBusStopById = async (req, res) => {
     try {
         const busStop = await BusStop.findById(req.params.id);
-        if (!busStop) return res.status(404).json({ message: 'Bus Stop not found' });
+        if (!busStop) {
+            return res.status(404).json({ error: 'Bus Stop not found' });
+        }
         res.json(busStop);
-    } catch (err) {
-        res.status(500).json({ message: 'Server Error' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 };
 
-// Add a new bus stop
-exports.addBusStop = async (req, res) => {
-    try {
-        const newBusStop = new BusStop(req.body);
-        await newBusStop.save();
-        res.json(newBusStop);
-    } catch (err) {
-        res.status(400).json({ message: 'Invalid data' });
-    }
-};
-
-// Update a bus stop
-exports.updateBusStop = async (req, res) => {
-    try {
-        const updatedBusStop = await BusStop.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedBusStop) return res.status(404).json({ message: 'Bus Stop not found' });
-        res.json(updatedBusStop);
-    } catch (err) {
-        res.status(400).json({ message: 'Invalid data' });
-    }
-};
-
-// Delete a bus stop
 exports.deleteBusStop = async (req, res) => {
     try {
         const busStop = await BusStop.findByIdAndDelete(req.params.id);
-        if (!busStop) return res.status(404).json({ message: 'Bus Stop not found' });
+        if (!busStop) {
+            return res.status(404).json({ error: 'Bus Stop not found' });
+        }
         res.json({ message: 'Bus Stop deleted' });
-    } catch (err) {
-        res.status(500).json({ message: 'Server Error' });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 };
