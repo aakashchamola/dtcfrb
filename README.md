@@ -12,13 +12,12 @@ This is a full-stack web application for managing bus scheduling and operations.
 
 ### **1️⃣ Clone the Repository**
 ```sh
-git clone <repository-url>
+git clone https://github.com/aakashchamola/dtcfrb.git
 ```
-Replace `<repository-url>` with your actual GitHub repository link.
 
 Move into the project folder:
 ```sh
-cd <project-folder-name>
+cd dtcfrb
 ```
 
 ---
