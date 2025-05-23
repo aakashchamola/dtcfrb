@@ -1,6 +1,6 @@
 # Bus Scheduling and Management System (MERN Stack)
 
-This is a full-stack web application for managing bus scheduling and operations. It includes features for managing buses, drivers, conductors, routes, and bus stops.
+This is a full-stack web application for managing bus scheduling and operations. It includes features for managing buses, drivers, conductors, routes, and bus stops. I created this for one of the problem statement of the Smart India Hackathon (SIH-2024).
 
 ## 📌 Project Features
 - Create and manage buses, drivers, and conductors.
